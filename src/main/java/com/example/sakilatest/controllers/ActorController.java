@@ -5,13 +5,22 @@ import com.example.sakilatest.input.ActorInput;
 import com.example.sakilatest.services.ActorService;
 import com.example.sakilatest.validation.FullActorValidation;
 import com.example.sakilatest.validation.PartialActorValidation;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class ActorController {
@@ -39,9 +48,8 @@ public class ActorController {
     @PatchMapping("/actors/{id}")
     public Actor patchActor(
             @PathVariable Short id,
-            @RequestBody ActorInput data
+            @Validated(PartialActorValidation.Create.class) @RequestBody ActorInput data
     ){
-        validator.validate(data, PartialActorValidation.Create.class);
         return actorService.updateById(id, data);
     }
 
@@ -53,10 +61,11 @@ public class ActorController {
         return "Successfully removed actor with id: " + id;
     }
 
-    //maybe have to remove the @validated?
-    //https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html
-    //@ExceptionHandler
-    //public ResponseEntity<String> handle(IOException ex) {
-    //    ex.
-    //}
+
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    protected ResponseStatusException handleConstraintException(MethodArgumentNotValidException e) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
 }

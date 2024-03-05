@@ -1,6 +1,8 @@
 package com.example.sakilatest.entities;
 
 
+import com.example.sakilatest.partials.PartialActor;
+import com.example.sakilatest.partials.PartialFilm;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -38,9 +40,7 @@ public class Film {
             joinColumns = {@JoinColumn(name="film_id")},
             inverseJoinColumns = {@JoinColumn(name="actor_id")}
     )
-    @ToString.Exclude
-    @JsonIgnore
-    private List<Actor> cast = new ArrayList<>();
+    private List<PartialActor> cast = new ArrayList<>();
 
     @Column(name="rental_duration")
     private byte rentalDuration;
@@ -58,4 +58,12 @@ public class Film {
     @OneToOne
     @JoinColumn(name = "original_language_id", referencedColumnName = "language_id")
     private Language originalLanguage;
+
+    public PartialFilm toPartial(){
+        PartialFilm partial = new PartialFilm();
+        partial.setId(this.id);
+        partial.setTitle(this.title);
+        partial.setReleaseYear(this.releaseYear);
+        return partial;
+    }
 }

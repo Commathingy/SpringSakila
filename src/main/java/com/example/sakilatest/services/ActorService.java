@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ActorService {
@@ -40,7 +41,7 @@ public class ActorService {
         actor.setLastName(data.getLastName());
         if (data.getInFilms() != null) {
             List<Film> films = filmRepo.findAllById(data.getInFilms());
-            actor.setInFilms(films);
+            actor.setInFilms(films.stream().map(Film::toPartial).collect(Collectors.toList()));
         }
         actorRepo.save(actor);
         return actor;
@@ -55,7 +56,8 @@ public class ActorService {
             actor.setLastName(data.getLastName());
         }
         if (data.getInFilms() != null) {
-            actor.setInFilms(filmRepo.findAllById(data.getInFilms()));
+            List<Film> films = filmRepo.findAllById(data.getInFilms());
+            actor.setInFilms(films.stream().map(Film::toPartial).collect(Collectors.toList()));
         }
         actorRepo.save(actor);
         return actor;

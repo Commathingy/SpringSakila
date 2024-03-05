@@ -1,9 +1,9 @@
 package com.example.sakilatest.entities;
 
+import com.example.sakilatest.partials.PartialFilm;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,5 @@ public class Actor {
             joinColumns = {@JoinColumn(name="actor_id")},
             inverseJoinColumns = {@JoinColumn(name="film_id")}
     )
-    @ToString.Exclude
-    private List<Film> inFilms = new ArrayList<>();
+    private List<PartialFilm> inFilms = new ArrayList<>();
 }
