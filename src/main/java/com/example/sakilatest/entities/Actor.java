@@ -2,6 +2,7 @@ package com.example.sakilatest.entities;
 
 import com.example.sakilatest.partials.PartialFilm;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,4 +32,14 @@ public class Actor {
             inverseJoinColumns = {@JoinColumn(name="film_id")}
     )
     private List<PartialFilm> inFilms = new ArrayList<>();
+
+
+    public Actor(){}
+
+    public Actor(Short id, String firstName, String lastName){
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.inFilms = new ArrayList<>();
+    }
 }
